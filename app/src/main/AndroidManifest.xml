@@ -11,8 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DetailMovieActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.DetailMovieActivity"
+            android:theme="@style/DetailTheme"/>
+        <activity android:name=".ui.DetailTvActivity"
+            android:theme="@style/DetailTheme"/>
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

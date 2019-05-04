@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Catalog movie</string>
+    <string name="change_language_settings">Change Language Settings</string>
 </resources>

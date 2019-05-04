@@ -8,18 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bayupamuji.catalogmovie.R;
-import com.bayupamuji.catalogmovie.data.DataMovie;
+import com.bayupamuji.catalogmovie.data.DataTvShow;
 
 import java.util.List;
 
-public class MoviesAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class TvAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final Context context;
-    private final List<DataMovie> dataMovies;
+    private final List<DataTvShow> dataTvShows;
     private final ItemClickListener itemClickListener;
 
-    public MoviesAdapter(Context context, List<DataMovie> dataMovies, ItemClickListener itemClickListener) {
+    public TvAdapter(Context context, List<DataTvShow> dataTvShows, ItemClickListener itemClickListener) {
         this.context = context;
-        this.dataMovies = dataMovies;
+        this.dataTvShows = dataTvShows;
         this.itemClickListener = itemClickListener;
     }
 
@@ -31,8 +31,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        final DataMovie data = dataMovies.get(i);
-        viewHolder.bind(data,context);
+        final DataTvShow data = dataTvShows.get(i);
+        viewHolder.bindTv(data,context);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,12 +43,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return dataMovies.size();
+        return dataTvShows.size();
     }
 
-    public void updateMovie(List<DataMovie> dataMovie){
-        this.dataMovies.clear();
-        this.dataMovies.addAll(dataMovie);
+    public void updateTv(List<DataTvShow> dataTvShows){
+        this.dataTvShows.clear();
+        this.dataTvShows.addAll(dataTvShows);
         notifyDataSetChanged();
     }
 

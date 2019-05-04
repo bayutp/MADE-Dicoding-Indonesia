@@ -13,7 +13,7 @@ public class RestService {
         this.networkService = networkService;
     }
 
-    public void getMovies(final String api, final MyCallback callback){
+    public void getMovies(final String api, final MovieCallback callback){
         networkService.getMovies(api).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -27,8 +27,27 @@ public class RestService {
         });
     }
 
-    public interface MyCallback{
+    public void getTvShow(final String api, final TvShowCallback callback){
+        networkService.getTvShow(api).enqueue(new Callback<TvShowResponse>() {
+            @Override
+            public void onResponse(Call<TvShowResponse> call, Response<TvShowResponse> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<TvShowResponse> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+    public interface MovieCallback {
         void onSuccess(MovieResponse response);
+        void onError(Throwable error);
+    }
+
+    public interface TvShowCallback{
+        void onSuccess(TvShowResponse response);
         void onError(Throwable error);
     }
 }
