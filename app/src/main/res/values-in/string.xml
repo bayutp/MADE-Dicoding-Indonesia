@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">Katalog Film</string>
     <string name="change_language_settings">Ubah Pengaturan Bahasa</string>
+    <string name="title_tab1">Film</string>
+    <string name="title_tab2">Acara Tv</string>
 </resources>

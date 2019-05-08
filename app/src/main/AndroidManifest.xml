@@ -11,11 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.DetailMovieActivity"
+        <activity
+            android:name=".ui.DetailMovieActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/DetailTheme"/>
-        <activity android:name=".ui.DetailTvActivity"
+        <activity
+            android:name=".ui.DetailTvActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/DetailTheme"/>
-        <activity android:name=".ui.MainActivity">
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,5 +1,7 @@
 package com.bayupamuji.catalogmovie.network.response;
 
+import com.bayupamuji.catalogmovie.data.DataMovie;
+import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.network.NetworkService;
 
 import retrofit2.Call;
@@ -41,6 +43,34 @@ public class RestService {
         });
     }
 
+    public void getMovieDetail(final String api, final String id, final MovieDetailCallback callback){
+        networkService.getMovieDetail(id, api).enqueue(new Callback<DataMovie>() {
+            @Override
+            public void onResponse(Call<DataMovie> call, Response<DataMovie> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<DataMovie> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+    public void getTvDetail(final String api, final String id, final TvDetailCallback callback){
+        networkService.getTvDetail(id, api).enqueue(new Callback<DataTvShow>() {
+            @Override
+            public void onResponse(Call<DataTvShow> call, Response<DataTvShow> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<DataTvShow> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
     public interface MovieCallback {
         void onSuccess(MovieResponse response);
         void onError(Throwable error);
@@ -48,6 +78,16 @@ public class RestService {
 
     public interface TvShowCallback{
         void onSuccess(TvShowResponse response);
+        void onError(Throwable error);
+    }
+
+    public interface MovieDetailCallback{
+        void onSuccess(DataMovie response);
+        void onError(Throwable error);
+    }
+
+    public interface TvDetailCallback{
+        void onSuccess(DataTvShow response);
         void onError(Throwable error);
     }
 }

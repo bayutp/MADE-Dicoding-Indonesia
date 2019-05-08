@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bayupamuji.catalogmovie.BuildConfig;
@@ -40,6 +41,7 @@ public class TvShowFragment extends Fragment {
     private final List<DataTvShow> dataTvShows = new ArrayList<>();
     private RestService restService;
     private RecyclerView listView;
+    private ProgressBar progressBar;
 
     public TvShowFragment() {
     }
@@ -64,13 +66,13 @@ public class TvShowFragment extends Fragment {
 
             @Override
             public void onItemClick(DataTvShow dataTvShow) {
-                DataTvShow data = new DataTvShow(dataTvShow.getName(), dataTvShow.getPoster_path(), dataTvShow.getOverview());
                 Intent intent = new Intent(getActivity(), DetailTvActivity.class);
-                intent.putExtra(EXTRA_TV, data);
+                intent.putExtra(EXTRA_TV, dataTvShow.getId());
                 startActivity(intent);
             }
         });
         listView = view.findViewById(R.id.rc_tv);
+        progressBar = view.findViewById(R.id.progress_tv);
         listView.setHasFixedSize(true);
 
         setupList();
@@ -86,11 +88,14 @@ public class TvShowFragment extends Fragment {
         restService.getTvShow(api, new RestService.TvShowCallback() {
             @Override
             public void onSuccess(TvShowResponse response) {
+                progressBar.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
                 adapter.updateTv(response.getResults());
             }
 
             @Override
             public void onError(Throwable error) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });

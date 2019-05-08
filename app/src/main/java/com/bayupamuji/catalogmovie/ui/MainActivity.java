@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void viewPagerSetup() {
-        viewPager.setAdapter(new TabAdapter(getSupportFragmentManager()));
+        viewPager.setAdapter(new TabAdapter(getSupportFragmentManager(),this));
         tabLayout.setTabTextColors(getResources().getColor(R.color.colorUnActive),
                 getResources().getColor(android.R.color.white));
         tabLayout.setupWithViewPager(viewPager);

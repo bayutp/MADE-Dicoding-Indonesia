@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class DataTvShow implements Parcelable {
+    @SerializedName("id")
+    private final String id;
+
     @SerializedName("name")
     private final String name;
 
@@ -15,13 +18,25 @@ public class DataTvShow implements Parcelable {
     @SerializedName("overview")
     private final String overview;
 
-    public DataTvShow(String name, String poster_path, String overview) {
-        this.name = name;
-        this.poster_path = poster_path;
-        this.overview = overview;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPoster_path() {
+        return poster_path;
+    }
+
+    public String getOverview() {
+        return overview;
     }
 
     private DataTvShow(Parcel in) {
+        id = in.readString();
         name = in.readString();
         poster_path = in.readString();
         overview = in.readString();
@@ -39,18 +54,6 @@ public class DataTvShow implements Parcelable {
         }
     };
 
-    public String getName() {
-        return name;
-    }
-
-    public String getPoster_path() {
-        return poster_path;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -58,6 +61,7 @@ public class DataTvShow implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(poster_path);
         dest.writeString(overview);

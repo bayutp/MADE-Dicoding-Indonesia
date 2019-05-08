@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">film de catalogue</string>
     <string name="change_language_settings">Changer les paramètres de langue</string>
+    <string name="title_tab1">Film</string>
+    <string name="title_tab2">émission de télévision</string>
 </resources>

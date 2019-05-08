@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bayupamuji.catalogmovie.BuildConfig;
@@ -40,6 +41,7 @@ public class MoviesFragment extends Fragment {
     private final List<DataMovie> dataMovies = new ArrayList<>();
     private RestService restService;
     private RecyclerView listView;
+    private ProgressBar progressBar;
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -61,9 +63,9 @@ public class MoviesFragment extends Fragment {
         adapter = new MoviesAdapter(getActivity(), dataMovies, new ItemClickListener() {
             @Override
             public void onItemClick(DataMovie dataMovie) {
-                DataMovie data = new DataMovie(dataMovie.getTitle(), dataMovie.getPoster_path(), dataMovie.getOverview());
+//                DataMovie data = new DataMovie(dataMovie.getTitle(), dataMovie.getPoster_path(), dataMovie.getOverview());
                 Intent intent = new Intent(getActivity(), DetailMovieActivity.class);
-                intent.putExtra(EXTRA_MOVIE, data);
+                intent.putExtra(EXTRA_MOVIE, dataMovie.getId());
                 startActivity(intent);
             }
 
@@ -71,6 +73,7 @@ public class MoviesFragment extends Fragment {
             public void onItemClick(DataTvShow dataTvShow) { }
         });
         listView = view.findViewById(R.id.rc_movies);
+        progressBar = view.findViewById(R.id.progress_movies);
         listView.setHasFixedSize(true);
 
         setupList();
@@ -86,11 +89,14 @@ public class MoviesFragment extends Fragment {
         restService.getMovies(api, new RestService.MovieCallback() {
             @Override
             public void onSuccess(MovieResponse response) {
+                progressBar.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
                 adapter.updateMovie(response.getMovieList());
             }
 
             @Override
             public void onError(Throwable error) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
