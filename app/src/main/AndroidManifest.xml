@@ -11,14 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.BookmarkActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name=".ui.DetailMovieActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/DetailTheme"/>
+            android:theme="@style/DetailTheme" />
         <activity
             android:name=".ui.DetailTvActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/DetailTheme"/>
+            android:theme="@style/DetailTheme" />
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">

@@ -1,7 +1,10 @@
 package com.bayupamuji.catalogmovie.ui;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -11,6 +14,7 @@ import android.widget.Toast;
 import com.bayupamuji.catalogmovie.BuildConfig;
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.data.DataMovie;
+import com.bayupamuji.catalogmovie.database.DatabaseHelper;
 import com.bayupamuji.catalogmovie.network.NetworkService;
 import com.bayupamuji.catalogmovie.network.response.RestService;
 import com.bumptech.glide.Glide;
@@ -30,6 +34,10 @@ public class DetailMovieActivity extends AppCompatActivity {
     private TextView tvName,tvDesc;
     private RestService restService;
     private ProgressBar progressBar;
+    private Boolean status = false;
+    private Menu menu = null;
+    private DatabaseHelper db;
+    private String id,title,path_local,overview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +58,7 @@ public class DetailMovieActivity extends AppCompatActivity {
 
     private void loadData() {
         String api = BuildConfig.TMDB_API_KEY;
-        String id = getIntent().getStringExtra(EXTRA_MOVIE);
+        id = getIntent().getStringExtra(EXTRA_MOVIE);
         restService.getMovieDetail(api, id, new RestService.MovieDetailCallback() {
             @Override
             public void onSuccess(DataMovie response) {
@@ -59,9 +67,10 @@ public class DetailMovieActivity extends AppCompatActivity {
                 tvName.setVisibility(View.VISIBLE);
                 tvDesc.setVisibility(View.VISIBLE);
 
-                String title = response.getTitle();
+                title = response.getTitle();
                 String path = "http://image.tmdb.org/t/p/w185_and_h278_bestv2" + response.getPoster_path();
-                String overview = response.getOverview();
+                overview = response.getOverview();
+                path_local = response.getPoster_path();
 
                 tvName.setText(title);
                 tvDesc.setText(overview);
@@ -84,6 +93,7 @@ public class DetailMovieActivity extends AppCompatActivity {
         tvDesc = findViewById(R.id.tv_desc_detail);
         progressBar = findViewById(R.id.progress_movie_detail);
 
+        db = new DatabaseHelper(this);
     }
 
     @Override
@@ -107,5 +117,71 @@ public class DetailMovieActivity extends AppCompatActivity {
                 .build();
         NetworkService networkService = retrofit.create(NetworkService.class);
         restService = new RestService(networkService);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_menu,menu);
+        this.menu = menu;
+        DataMovie data = db.getMovie(id);
+        cekStatus(data);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_bookmark){
+            if (status) {
+                status = false;
+                removeBookmark();
+            } else {
+                status = true;
+                addBookmark();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    private void removeBookmark() {
+        try{
+            db.deleteMovie(id);
+            changeIcon();
+            Toast.makeText(this,title + getString(R.string.not_bookmark_msg),
+                    Toast.LENGTH_SHORT).show();
+        }catch (Throwable error){
+            Toast.makeText(this,"Remove Failed: "+error.getLocalizedMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void addBookmark() {
+        try{
+            db.insertMovies(id,title,path_local,overview);
+            changeIcon();
+            Toast.makeText(this,title+getString(R.string.bookmark_msg),
+                    Toast.LENGTH_SHORT).show();
+        }catch (Throwable error){
+            Toast.makeText(this,"Bookmark Failed : "+error.getLocalizedMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void changeIcon() {
+        if (status)
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this,R.drawable.ic_bookmark));
+        else
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_bookmark_border));
+    }
+
+    private void cekStatus(DataMovie data){
+        if (null != data.getId()){
+            status = true;
+            changeIcon();
+        }else{
+            status = false;
+            changeIcon();
+        }
     }
 }

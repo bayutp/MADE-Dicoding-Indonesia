@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void viewPagerSetup() {
-        viewPager.setAdapter(new TabAdapter(getSupportFragmentManager(),this));
+        viewPager.setAdapter(new TabAdapter(getSupportFragmentManager(), this,
+                new MoviesFragment(), new TvShowFragment()));
         tabLayout.setTabTextColors(getResources().getColor(R.color.colorUnActive),
                 getResources().getColor(android.R.color.white));
         tabLayout.setupWithViewPager(viewPager);
@@ -39,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         toolbar = findViewById(R.id.toolbar);
         viewPager = findViewById(R.id.view_pager);
-        tabLayout= findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
 
         setupToolbar();
     }
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
-        if (getSupportActionBar()!= null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }
     }
@@ -59,9 +60,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_change_settings){
-            Intent intent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
-            startActivity(intent);
+        switch (item.getItemId()) {
+            case R.id.action_change_settings:
+                startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
+                break;
+            case R.id.bookmark_activity:
+                startActivity(new Intent(MainActivity.this, BookmarkActivity.class));
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -6,17 +6,31 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class DataMovie implements Parcelable {
+    public static final String TABLE_NAME = "movies";
+
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_POSTER_PATH = "poster_path";
+    public static final String COLUMN_OVERVIEW = "overview";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + "("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                    + COLUMN_TITLE + " TEXT,"
+                    + COLUMN_POSTER_PATH + " TEXT,"
+                    + COLUMN_OVERVIEW + " TEXT)";
+
     @SerializedName("id")
-    private final String id;
+    private String id;
 
     @SerializedName("title")
-    private final String title;
+    private String title;
 
     @SerializedName("poster_path")
-    private final String poster_path;
+    private String poster_path;
 
     @SerializedName("overview")
-    private final String overview;
+    private String overview;
 
 
     public String getId() {
@@ -33,6 +47,22 @@ public class DataMovie implements Parcelable {
 
     public String getOverview() {
         return overview;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
     private DataMovie(Parcel in) {
@@ -65,5 +95,15 @@ public class DataMovie implements Parcelable {
         dest.writeString(title);
         dest.writeString(poster_path);
         dest.writeString(overview);
+    }
+
+    public DataMovie(String id, String title, String poster_path, String overview) {
+        this.id = id;
+        this.title = title;
+        this.poster_path = poster_path;
+        this.overview = overview;
+    }
+
+    public DataMovie() {
     }
 }

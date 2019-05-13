@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bayupamuji.catalogmovie.BuildConfig;
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.data.DataTvShow;
@@ -25,14 +26,14 @@ class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     void bind(DataMovie movie, Context context){
-        String url = "http://image.tmdb.org/t/p/w185_and_h278_bestv2"+movie.getPoster_path();
+        String url = BuildConfig.BASE_IMAGE_URL+movie.getPoster_path();
         tvName.setText(movie.getTitle());
         tvDesk.setText(movie.getOverview());
         Glide.with(context).load(url).into(ivPhoto);
     }
 
     void bindTv(DataTvShow data, Context context){
-        String url = "http://image.tmdb.org/t/p/w185_and_h278_bestv2"+data.getPoster_path();
+        String url = BuildConfig.BASE_IMAGE_URL+data.getPoster_path();
         tvName.setText(data.getName());
         tvDesk.setText(data.getOverview());
         Glide.with(context).load(url).into(ivPhoto);

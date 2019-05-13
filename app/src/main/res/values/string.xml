@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Catalog Movie</string>
+    <string name="change_language_settings">Change Language Settings</string>
+    <string name="title_tab1">Movies</string>
+    <string name="title_tab2">Tv Show</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="not_bookmark_msg"> not bookmarked</string>
+    <string name="bookmark_msg"> bookmarked</string>
+</resources>

@@ -76,10 +76,7 @@ public class MoviesFragment extends Fragment {
         progressBar = view.findViewById(R.id.progress_movies);
         listView.setHasFixedSize(true);
 
-        setupList();
-    }
 
-    private void setupList() {
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
         listView.setAdapter(adapter);
     }

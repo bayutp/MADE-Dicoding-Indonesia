@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Catalog movie</string>
-    <string name="change_language_settings">Change Language Settings</string>
-    <string name="title_tab1">Movie</string>
-    <string name="title_tab2">Tv Show</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
 </resources>

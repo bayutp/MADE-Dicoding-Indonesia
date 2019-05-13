@@ -4,4 +4,7 @@
     <string name="change_language_settings">Ubah Pengaturan Bahasa</string>
     <string name="title_tab1">Film</string>
     <string name="title_tab2">Acara Tv</string>
+    <string name="bookmark">Tandai</string>
+    <string name="not_bookmark_msg"> sudah tidak ditandai</string>
+    <string name="bookmark_msg"> telah ditandai</string>
 </resources>

@@ -4,4 +4,7 @@
     <string name="change_language_settings">Changer les paramètres de langue</string>
     <string name="title_tab1">Film</string>
     <string name="title_tab2">émission de télévision</string>
+    <string name="bookmark">Signet</string>
+    <string name="not_bookmark_msg"> non marqué</string>
+    <string name="bookmark_msg"> mis en signet</string>
 </resources>
