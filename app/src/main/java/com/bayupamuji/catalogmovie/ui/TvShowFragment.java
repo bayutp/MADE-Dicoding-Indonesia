@@ -1,5 +1,7 @@
 package com.bayupamuji.catalogmovie.ui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,7 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -40,8 +46,11 @@ public class TvShowFragment extends Fragment {
     private TvAdapter adapter;
     private final List<DataTvShow> dataTvShows = new ArrayList<>();
     private RestService restService;
-    private RecyclerView listView;
+    private RecyclerView listView, rcSearch;
     private ProgressBar progressBar;
+    private SearchView searchView;
+    private SearchView.OnQueryTextListener queryTextListener;
+    String api = BuildConfig.TMDB_API_KEY;
 
     public TvShowFragment() {
     }
@@ -57,7 +66,7 @@ public class TvShowFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initRest();
         loadData();
-
+        setHasOptionsMenu(true);
         adapter = new TvAdapter(getActivity(), dataTvShows, new ItemClickListener() {
             @Override
             public void onItemClick(DataMovie dataMovie) {
@@ -72,8 +81,10 @@ public class TvShowFragment extends Fragment {
             }
         });
         listView = view.findViewById(R.id.rc_tv);
+        rcSearch = view.findViewById(R.id.rc_tv_search);
         progressBar = view.findViewById(R.id.progress_tv);
         listView.setHasFixedSize(true);
+        rcSearch.setHasFixedSize(true);
 
         setupList();
     }
@@ -81,14 +92,16 @@ public class TvShowFragment extends Fragment {
     private void setupList() {
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
         listView.setAdapter(adapter);
+
+        rcSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void loadData() {
-        String api = BuildConfig.TMDB_API_KEY;
         restService.getTvShow(api, new RestService.TvShowCallback() {
             @Override
             public void onSuccess(TvShowResponse response) {
                 progressBar.setVisibility(View.GONE);
+                rcSearch.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
                 adapter.updateTv(response.getResults());
             }
@@ -116,6 +129,77 @@ public class TvShowFragment extends Fragment {
                 .build();
         NetworkService networkService = retrofit.create(NetworkService.class);
         restService = new RestService(networkService);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if (null != menuItem){
+            searchView = (SearchView) menuItem.getActionView();
+        }
+        if (null != searchView){
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    if (s.isEmpty()){
+                        return true;
+                    }else{
+                        String query = s.toLowerCase().replace(" ","%20");
+                        rcSearch.setAdapter(adapter);
+                        getSearchResult(query);
+                        return true;
+                    }
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
+        if (null != menuItem){
+            menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    loadData();
+                    return true;
+                }
+            });
+        }
+    }
+
+    private void getSearchResult(String query) {
+        restService.getSearchTvResult(api, query, new RestService.TvShowCallback() {
+            @Override
+            public void onSuccess(TvShowResponse response) {
+                rcSearch.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+                adapter.updateTv(response.getResults());
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Toast.makeText(getActivity(), "error : "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search){
+            return false;
+        }
+        searchView.setOnQueryTextListener(queryTextListener);
+        return super.onOptionsItemSelected(item);
     }
 }
 

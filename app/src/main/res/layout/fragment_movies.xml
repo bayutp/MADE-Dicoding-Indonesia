@@ -18,4 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rc_search_movies"
+        tools:listitem="@layout/item"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>

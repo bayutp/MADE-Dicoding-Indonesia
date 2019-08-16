@@ -71,6 +71,34 @@ public class RestService {
         });
     }
 
+    public void getSearchMovieResult(final String api, final String query, final MovieCallback callback){
+        networkService.getSearchMovieResult(api, query).enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+    public void getSearchTvResult(final String api, final String query, final TvShowCallback callback){
+        networkService.getSearchTvResult(api, query).enqueue(new Callback<TvShowResponse>() {
+            @Override
+            public void onResponse(Call<TvShowResponse> call, Response<TvShowResponse> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<TvShowResponse> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
     public interface MovieCallback {
         void onSuccess(MovieResponse response);
         void onError(Throwable error);

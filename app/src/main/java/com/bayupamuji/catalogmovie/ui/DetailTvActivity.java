@@ -37,7 +37,7 @@ public class DetailTvActivity extends AppCompatActivity {
     private boolean status = false;
     private Menu menu = null;
     private DatabaseHelper db;
-    private String id, name, path_local, overview;
+    private String id, name, path_local, overview, release;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,7 @@ public class DetailTvActivity extends AppCompatActivity {
                 String path = "http://image.tmdb.org/t/p/w185_and_h278_bestv2" + response.getPoster_path();
                 overview = response.getOverview();
                 path_local = response.getPoster_path();
+                release = response.getRelease_date();
 
                 tvName.setText(name);
                 tvDesc.setText(overview);
@@ -148,7 +149,7 @@ public class DetailTvActivity extends AppCompatActivity {
         try{
             db.deleteTvShow(id);
             changeIcon();
-            Toast.makeText(this,name+" not bookmarked ",
+            Toast.makeText(this,name+" "+getString(R.string.not_bookmark_msg),
                     Toast.LENGTH_SHORT).show();
         }catch (Throwable error){
             Toast.makeText(this,"Remove Failed: "+error.getLocalizedMessage(),
@@ -158,9 +159,9 @@ public class DetailTvActivity extends AppCompatActivity {
 
     private void addBookmark(){
         try{
-            db.insertTvShow(id,name,path_local,overview);
+            db.insertTvShow(id,name,path_local,overview, release);
             changeIcon();
-            Toast.makeText(this,name+" bookmarked ",
+            Toast.makeText(this,name+" "+getString(R.string.bookmark),
                     Toast.LENGTH_SHORT).show();
         }catch (Throwable error){
             Toast.makeText(this,"Add Failed: "+error.getLocalizedMessage(),

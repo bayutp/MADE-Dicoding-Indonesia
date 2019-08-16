@@ -1,5 +1,6 @@
 package com.bayupamuji.catalogmovie.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bayupamuji.catalogmovie.BuildConfig;
+import com.bayupamuji.catalogmovie.widget.CatalogMovie;
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.database.DatabaseHelper;
@@ -31,13 +33,13 @@ import static com.bayupamuji.catalogmovie.ui.MoviesFragment.EXTRA_MOVIE;
 public class DetailMovieActivity extends AppCompatActivity {
 
     private ImageView ivPhoto;
-    private TextView tvName,tvDesc;
+    private TextView tvName, tvDesc;
     private RestService restService;
     private ProgressBar progressBar;
     private Boolean status = false;
     private Menu menu = null;
     private DatabaseHelper db;
-    private String id,title,path_local,overview;
+    private String id, title, path_local, overview, release;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class DetailMovieActivity extends AppCompatActivity {
     }
 
     private void setupToolbar(String title) {
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -71,6 +73,7 @@ public class DetailMovieActivity extends AppCompatActivity {
                 String path = "http://image.tmdb.org/t/p/w185_and_h278_bestv2" + response.getPoster_path();
                 overview = response.getOverview();
                 path_local = response.getPoster_path();
+                release = response.getRelease_date();
 
                 tvName.setText(title);
                 tvDesc.setText(overview);
@@ -82,7 +85,7 @@ public class DetailMovieActivity extends AppCompatActivity {
             @Override
             public void onError(Throwable error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(DetailMovieActivity.this,error.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(DetailMovieActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -102,7 +105,7 @@ public class DetailMovieActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-    private void initRest(){
+    private void initRest() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
@@ -121,7 +124,7 @@ public class DetailMovieActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.detail_menu,menu);
+        getMenuInflater().inflate(R.menu.detail_menu, menu);
         this.menu = menu;
         DataMovie data = db.getMovie(id);
         cekStatus(data);
@@ -130,7 +133,7 @@ public class DetailMovieActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_bookmark){
+        if (item.getItemId() == R.id.action_bookmark) {
             if (status) {
                 status = false;
                 removeBookmark();
@@ -145,43 +148,51 @@ public class DetailMovieActivity extends AppCompatActivity {
     }
 
     private void removeBookmark() {
-        try{
+        try {
             db.deleteMovie(id);
             changeIcon();
-            Toast.makeText(this,title + getString(R.string.not_bookmark_msg),
+            Toast.makeText(this, title + " " + getString(R.string.not_bookmark_msg),
                     Toast.LENGTH_SHORT).show();
-        }catch (Throwable error){
-            Toast.makeText(this,"Remove Failed: "+error.getLocalizedMessage(),
+            update();
+        } catch (Throwable error) {
+            Toast.makeText(this, "Remove Failed: " + error.getLocalizedMessage(),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     private void addBookmark() {
-        try{
-            db.insertMovies(id,title,path_local,overview);
+        try {
+            db.insertMovies(id, title, path_local, overview, release);
             changeIcon();
-            Toast.makeText(this,title+getString(R.string.bookmark_msg),
+            Toast.makeText(this, title + " " + getString(R.string.bookmark_msg),
                     Toast.LENGTH_SHORT).show();
-        }catch (Throwable error){
-            Toast.makeText(this,"Bookmark Failed : "+error.getLocalizedMessage(),
+            update();
+        } catch (Throwable error) {
+            Toast.makeText(this, "Bookmark Failed : " + error.getLocalizedMessage(),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     private void changeIcon() {
         if (status)
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(this,R.drawable.ic_bookmark));
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_bookmark));
         else
             menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_bookmark_border));
     }
 
-    private void cekStatus(DataMovie data){
-        if (null != data.getId()){
+    private void cekStatus(DataMovie data) {
+        if (null != data.getId()) {
             status = true;
             changeIcon();
-        }else{
+        } else {
             status = false;
             changeIcon();
         }
+    }
+
+    private void update(){
+        Intent intent = new Intent(this, CatalogMovie.class);
+        intent.setAction("update_widget");
+        this.sendBroadcast(intent);
     }
 }

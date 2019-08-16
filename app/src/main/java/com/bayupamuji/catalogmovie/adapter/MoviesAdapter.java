@@ -10,16 +10,16 @@ import android.view.ViewGroup;
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.data.DataMovie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final Context context;
-    private final List<DataMovie> dataMovies;
+    private List<DataMovie> dataMovies = new ArrayList<>();
     private final ItemClickListener itemClickListener;
 
-    public MoviesAdapter(Context context, List<DataMovie> dataMovies, ItemClickListener itemClickListener) {
+    public MoviesAdapter(Context context, ItemClickListener itemClickListener) {
         this.context = context;
-        this.dataMovies = dataMovies;
         this.itemClickListener = itemClickListener;
     }
 
@@ -47,8 +47,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     public void updateMovie(List<DataMovie> dataMovie){
-        this.dataMovies.clear();
-        this.dataMovies.addAll(dataMovie);
+        dataMovies.clear();
+        dataMovies.addAll(dataMovie);
         notifyDataSetChanged();
     }
 

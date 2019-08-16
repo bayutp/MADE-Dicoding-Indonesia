@@ -22,4 +22,10 @@ public interface NetworkService {
 
     @GET("tv/{tv_id}")
     Call<DataTvShow> getTvDetail(@Path("tv_id") String id, @Query("api_key") String api);
+
+    @GET("search/movie")
+    Call<MovieResponse> getSearchMovieResult(@Query("api_key") String api, @Query("query") String query);
+
+    @GET("search/tv")
+    Call<TvShowResponse> getSearchTvResult(@Query("api_key") String api, @Query("query") String query);
 }

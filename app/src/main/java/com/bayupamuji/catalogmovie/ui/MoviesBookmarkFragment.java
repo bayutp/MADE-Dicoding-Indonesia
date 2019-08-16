@@ -25,14 +25,10 @@ import java.util.List;
 
 import static com.bayupamuji.catalogmovie.ui.MoviesFragment.EXTRA_MOVIE;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MoviesBookmarkFragment extends Fragment {
 
 
     private RecyclerView rcBookmark;
-    private List<DataMovie> data = new ArrayList<>();
     private MoviesAdapter adapter;
     private ProgressBar progressBar;
 
@@ -57,7 +53,7 @@ public class MoviesBookmarkFragment extends Fragment {
     }
 
     private void initView() {
-        adapter = new MoviesAdapter(getActivity(), data, new ItemClickListener() {
+        adapter = new MoviesAdapter(getActivity(), new ItemClickListener() {
             @Override
             public void onItemClick(DataMovie dataMovie) {
                 Intent intent = new Intent(getActivity(), DetailMovieActivity.class);
@@ -77,10 +73,9 @@ public class MoviesBookmarkFragment extends Fragment {
 
     private void loadData() {
         DatabaseHelper db = new DatabaseHelper(getActivity());
-        data = db.getAllMovies();
         progressBar.setVisibility(View.GONE);
         rcBookmark.setVisibility(View.VISIBLE);
-        adapter.updateMovie(data);
+        adapter.updateMovie(db.getAllMovies());
     }
 
     @Override
