@@ -99,6 +99,20 @@ public class RestService {
         });
     }
 
+    public void getUpComingMovies(final String api, final MovieCallback callback){
+        networkService.getUpComingMovies(api).enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
     public interface MovieCallback {
         void onSuccess(MovieResponse response);
         void onError(Throwable error);

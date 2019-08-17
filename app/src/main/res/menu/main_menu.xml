@@ -9,4 +9,8 @@
         android:id="@+id/bookmark_activity"
         android:title="@string/bookmark"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/reminder_activity"
+        android:title="Reminder"
+        app:showAsAction="never"/>
 </menu>

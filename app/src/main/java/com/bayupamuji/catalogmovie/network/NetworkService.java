@@ -1,5 +1,7 @@
 package com.bayupamuji.catalogmovie.network;
 
+import android.graphics.Movie;
+
 import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.network.response.MovieResponse;
@@ -28,4 +30,7 @@ public interface NetworkService {
 
     @GET("search/tv")
     Call<TvShowResponse> getSearchTvResult(@Query("api_key") String api, @Query("query") String query);
+
+    @GET("movie/upcoming")
+    Call<MovieResponse> getUpComingMovies(@Query("api_key") String api);
 }

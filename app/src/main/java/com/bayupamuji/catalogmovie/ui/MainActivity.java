@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bookmark_activity:
                 startActivity(new Intent(MainActivity.this, BookmarkActivity.class));
                 break;
+            case R.id.reminder_activity:
+                startActivity(new Intent(MainActivity.this, ReminderActivity.class));
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
