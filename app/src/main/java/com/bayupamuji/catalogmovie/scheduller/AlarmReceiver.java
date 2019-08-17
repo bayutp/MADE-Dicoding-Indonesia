@@ -45,7 +45,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String type = intent.getStringExtra(EXTRA_TYPE);
         String message = intent.getStringExtra(EXTRA_MESSAGE);
 
-        String title = type.equalsIgnoreCase(TYPE_DAILY_REMINDER) ? TYPE_DAILY_REMINDER : TYPE_NEW_REMINDER;
+        String title = "Catalog Movie";
         int notifId = type.equalsIgnoreCase(TYPE_DAILY_REMINDER) ? ID_DAILY_REMINDER : ID_NEW_REMINDER;
 
         sendNotification(context, title, message, notifId);

@@ -63,7 +63,7 @@ public class ReminderActivity extends AppCompatActivity implements CompoundButto
 
     }
 
-    private void initRest(){
+    private void initRest() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
@@ -82,41 +82,30 @@ public class ReminderActivity extends AppCompatActivity implements CompoundButto
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        switch (compoundButton.getId()){
-            case R.id.switch_daily_reminder :
-                if (isChecked){
+        switch (compoundButton.getId()) {
+            case R.id.switch_daily_reminder:
+                if (isChecked) {
                     alarmReceiver.setDailyReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER, "07:00", "Hai, do you want to watch movie today, lets check new movie here");
-                }else {
+                } else {
                     alarmReceiver.disableReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER);
                 }
                 break;
-            case R.id.switch_new_reminder :
-                if (isChecked){
+            case R.id.switch_new_reminder:
+                if (isChecked) {
                     restService.getUpComingMovies(BuildConfig.TMDB_API_KEY, new RestService.MovieCallback() {
                         @Override
                         public void onSuccess(MovieResponse response) {
-                            Date date = Calendar.getInstance().getTime();
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY", Locale.getDefault());
-                            String currentDate = simpleDateFormat.format(date);
-                            for (int i=0; i<=response.getMovieList().size(); i++){
-                                try {
-                                    Date date1 = simpleDateFormat.parse(response.getMovieList().get(i).getRelease_date());
-                                    String movieRelease = simpleDateFormat.format(date1);
-                                    if (movieRelease.equalsIgnoreCase(currentDate)){
-                                        alarmReceiver.setNewMovieReminder(ReminderActivity.this,AlarmReceiver.TYPE_NEW_REMINDER, "00:00","Hai, "+response.getMovieList().get(i).getTitle()+" release today, check it now!");
-                                    }
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                            int index = new Random().nextInt(response.getMovieList().size()-1);
+                            alarmReceiver.setNewMovieReminder(ReminderActivity.this, AlarmReceiver.TYPE_NEW_REMINDER, "00:00", "Hai, " + response.getMovieList().get(index).getTitle() + " released soon, check it now!");
+
                         }
 
                         @Override
                         public void onError(Throwable error) {
-                            Toast.makeText(ReminderActivity.this, "network error : "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReminderActivity.this, "network error : " + error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else {
+                } else {
                     alarmReceiver.disableReminder(this, AlarmReceiver.TYPE_NEW_REMINDER);
                 }
                 break;
