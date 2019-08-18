@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.adapter.ItemClickListener;
@@ -27,8 +26,6 @@ import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.database.DatabaseHelper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static com.bayupamuji.catalogmovie.ui.MoviesFragment.EXTRA_MOVIE;
@@ -40,7 +37,6 @@ public class MoviesBookmarkFragment extends Fragment {
     private MoviesAdapter adapter;
     private ProgressBar progressBar;
     private Cursor cursor;
-    private Context context;
 
     public MoviesBookmarkFragment() {
         // Required empty public constructor
@@ -57,7 +53,7 @@ public class MoviesBookmarkFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rcBookmark = view.findViewById(R.id.rc_movies);
         progressBar = view.findViewById(R.id.progress_movies);
-        context = view.getContext();
+        Context context = view.getContext();
         loadData();
         initView();
     }

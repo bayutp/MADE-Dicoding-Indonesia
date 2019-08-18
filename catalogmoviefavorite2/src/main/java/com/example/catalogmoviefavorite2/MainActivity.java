@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoadMovieCallback, ItemClickListener {
 
-    MoviesAdapter adapter;
+    private MoviesAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

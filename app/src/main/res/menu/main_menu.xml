@@ -11,6 +11,6 @@
         app:showAsAction="never"/>
     <item
         android:id="@+id/reminder_activity"
-        android:title="Reminder"
+        android:title="@string/reminder_title"
         app:showAsAction="never"/>
 </menu>

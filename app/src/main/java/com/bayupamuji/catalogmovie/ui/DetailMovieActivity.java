@@ -42,7 +42,6 @@ public class DetailMovieActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Boolean status = false;
     private Menu menu = null;
-    private DatabaseHelper db;
     private DataMovie dataMovie;
     private String id, title, path_local, overview, release;
 
@@ -102,7 +101,7 @@ public class DetailMovieActivity extends AppCompatActivity {
         tvDesc = findViewById(R.id.tv_desc_detail);
         progressBar = findViewById(R.id.progress_movie_detail);
 
-        db = new DatabaseHelper(this);
+        DatabaseHelper db = new DatabaseHelper(this);
     }
 
     @Override

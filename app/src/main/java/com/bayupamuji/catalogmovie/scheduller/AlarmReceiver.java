@@ -13,8 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.ui.MainActivity;
@@ -28,14 +26,14 @@ import java.util.Locale;
 public class AlarmReceiver extends BroadcastReceiver {
     public static final String TYPE_DAILY_REMINDER = "DAILY REMINDER";
     public static final String TYPE_NEW_REMINDER = "NEW MOVIE REMINDER";
-    public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
-    public static final String CHANNEL_ID = "Channel_01";
-    public static final String CHANNEL_NAME = "Movie Catalog channel";
-    private String TIME_FORMAT = "HH:mm";
+    private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    private static final String EXTRA_TYPE = "EXTRA_TYPE";
+    private static final String CHANNEL_ID = "Channel_01";
+    private static final String CHANNEL_NAME = "Movie Catalog channel";
+    private final String TIME_FORMAT = "HH:mm";
 
-    public final int ID_DAILY_REMINDER = 1;
-    public final int ID_NEW_REMINDER = 2;
+    private final int ID_DAILY_REMINDER = 1;
+    private final int ID_NEW_REMINDER = 2;
 
     public AlarmReceiver() {
     }
@@ -45,7 +43,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String type = intent.getStringExtra(EXTRA_TYPE);
         String message = intent.getStringExtra(EXTRA_MESSAGE);
 
-        String title = "Catalog Movie";
+        String title ="Catalog Movie";
         int notifId = type.equalsIgnoreCase(TYPE_DAILY_REMINDER) ? ID_DAILY_REMINDER : ID_NEW_REMINDER;
 
         sendNotification(context, title, message, notifId);
@@ -57,10 +55,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentText(title)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
                 .setColor(ContextCompat.getColor(context, android.R.color.transparent))
@@ -145,7 +143,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    public boolean isDateInvalid(String date, String format){
+    private boolean isDateInvalid(String date, String format){
         try {
             DateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
             dateFormat.setLenient(false);

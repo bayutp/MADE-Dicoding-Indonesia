@@ -1,7 +1,5 @@
 package com.bayupamuji.catalogmovie.network;
 
-import android.graphics.Movie;
-
 import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.network.response.MovieResponse;

@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StackRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
+class StackRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private final List<DataMovie> data = new ArrayList<>();
     private final Context context;
 

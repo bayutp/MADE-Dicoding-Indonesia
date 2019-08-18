@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "movies_db";
-    public static final String AUTHOR = "com.bayupamuji.catalogmovie";
+    private static final String AUTHOR = "com.bayupamuji.catalogmovie";
 
     public static final Uri CONTENT_URI = new Uri.Builder().scheme("content")
             .authority(AUTHOR)

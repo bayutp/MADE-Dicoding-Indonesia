@@ -3,8 +3,6 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="search" translatable="false">search</string>
-    <string name="appwidget_text" translatable="false">EXAMPLE</string>
-    <string name="add_widget" translatable="false">Add widget</string>
     <string name="empty_text" translatable="false">empty</string>
     <string name="release_reminder_title" translatable="false">Release Reminder</string>
     <string name="release_reminder_desc" translatable="false">Reminder showing when the movies release today</string>

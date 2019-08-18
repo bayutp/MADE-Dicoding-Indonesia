@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 public class SharePreferencesCatalogMovie {
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
     public SharePreferencesCatalogMovie(@NonNull Context context){
         String SHARE_PREF_NAME = "SHARE_PREFERENCES_CATALOG_MOVIE";

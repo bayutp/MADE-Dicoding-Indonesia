@@ -3,7 +3,6 @@ package com.bayupamuji.catalogmovie.ui;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -16,12 +15,10 @@ import com.bayupamuji.catalogmovie.network.response.RestService;
 import com.bayupamuji.catalogmovie.scheduller.AlarmReceiver;
 import com.bayupamuji.catalogmovie.utils.SharePreferencesCatalogMovie;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -30,9 +27,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ReminderActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
-    AlarmReceiver alarmReceiver;
-    RestService restService;
-    SharePreferencesCatalogMovie sp;
+    private AlarmReceiver alarmReceiver;
+    private RestService restService;
+    private SharePreferencesCatalogMovie sp;
     private final String KEY_DAILY = "KEY_DAILY";
     private final String KEY_RELEASE = "KEY_RELEASE";
 

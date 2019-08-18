@@ -24,13 +24,13 @@ import com.bayupamuji.catalogmovie.BuildConfig;
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.adapter.ItemClickListener;
 import com.bayupamuji.catalogmovie.adapter.MovieAdapterRemote;
-import com.bayupamuji.catalogmovie.adapter.MoviesAdapter;
 import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.network.NetworkService;
 import com.bayupamuji.catalogmovie.network.response.MovieResponse;
 import com.bayupamuji.catalogmovie.network.response.RestService;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -47,7 +47,7 @@ public class MoviesFragment extends Fragment {
     private RecyclerView listView, rcSearch;
     private ProgressBar progressBar;
     private SearchView searchView;
-    private String api = BuildConfig.TMDB_API_KEY;
+    private final String api = BuildConfig.TMDB_API_KEY;
     private SearchView.OnQueryTextListener queryTextListener;
 
     public MoviesFragment() {
@@ -130,7 +130,7 @@ public class MoviesFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SEARCH_SERVICE);
         if (null != menuItem) {
             searchView = (android.support.v7.widget.SearchView) menuItem.getActionView();
         }

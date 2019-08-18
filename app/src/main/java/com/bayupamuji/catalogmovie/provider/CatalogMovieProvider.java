@@ -9,19 +9,17 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 
-import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.database.DatabaseHelper;
 
 import java.util.Objects;
 
 import static com.bayupamuji.catalogmovie.data.DataMovie.TABLE_NAME;
 import static com.bayupamuji.catalogmovie.database.DatabaseHelper.AUTHOR;
-import static com.bayupamuji.catalogmovie.database.DatabaseHelper.CONTENT_URI;
 
 public class CatalogMovieProvider extends ContentProvider {
-    public static final int MOVIE = 1;
-    public static final int MOVIE_ID = 2;
-    public static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final int MOVIE = 1;
+    private static final int MOVIE_ID = 2;
+    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     private DatabaseHelper dbHelper;
 
     static {

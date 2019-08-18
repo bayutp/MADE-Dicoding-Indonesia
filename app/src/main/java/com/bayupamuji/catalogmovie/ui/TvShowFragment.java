@@ -31,6 +31,7 @@ import com.bayupamuji.catalogmovie.network.response.TvShowResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -50,7 +51,7 @@ public class TvShowFragment extends Fragment {
     private ProgressBar progressBar;
     private SearchView searchView;
     private SearchView.OnQueryTextListener queryTextListener;
-    String api = BuildConfig.TMDB_API_KEY;
+    private final String api = BuildConfig.TMDB_API_KEY;
 
     public TvShowFragment() {
     }
@@ -135,7 +136,7 @@ public class TvShowFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SEARCH_SERVICE);
         if (null != menuItem){
             searchView = (SearchView) menuItem.getActionView();
         }

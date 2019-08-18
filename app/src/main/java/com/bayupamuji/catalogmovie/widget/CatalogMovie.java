@@ -9,13 +9,15 @@ import android.widget.RemoteViews;
 
 import com.bayupamuji.catalogmovie.R;
 
+import java.util.Objects;
+
 /**
  * Implementation of App Widget functionality.
  */
 public class CatalogMovie extends AppWidgetProvider {
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
 
         Intent intent = new Intent(context, StackWidgetService.class);
 
@@ -47,7 +49,7 @@ public class CatalogMovie extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        if (intent.getAction().equals("update_widget")){
+        if (Objects.requireNonNull(intent.getAction()).equals("update_widget")){
             AppWidgetManager gm = AppWidgetManager.getInstance(context);
             int[] ids = gm.getAppWidgetIds(new ComponentName(context, CatalogMovie.class));
             gm.notifyAppWidgetViewDataChanged(ids ,R.id.stack_view);
