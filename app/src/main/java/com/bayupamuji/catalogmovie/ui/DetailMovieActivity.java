@@ -1,6 +1,9 @@
 package com.bayupamuji.catalogmovie.ui;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +31,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.bayupamuji.catalogmovie.database.DatabaseHelper.CONTENT_URI;
 import static com.bayupamuji.catalogmovie.ui.MoviesFragment.EXTRA_MOVIE;
 
 public class DetailMovieActivity extends AppCompatActivity {
@@ -39,6 +43,7 @@ public class DetailMovieActivity extends AppCompatActivity {
     private Boolean status = false;
     private Menu menu = null;
     private DatabaseHelper db;
+    private DataMovie dataMovie;
     private String id, title, path_local, overview, release;
 
     @Override
@@ -61,6 +66,12 @@ public class DetailMovieActivity extends AppCompatActivity {
     private void loadData() {
         String api = BuildConfig.TMDB_API_KEY;
         id = getIntent().getStringExtra(EXTRA_MOVIE);
+        Cursor cursor = db.getMovieProvider(id);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) status = true;
+            cursor.close();
+        }
         restService.getMovieDetail(api, id, new RestService.MovieDetailCallback() {
             @Override
             public void onSuccess(DataMovie response) {
@@ -80,6 +91,7 @@ public class DetailMovieActivity extends AppCompatActivity {
                 Glide.with(DetailMovieActivity.this).load(path).into(ivPhoto);
 
                 setupToolbar(title);
+                dataMovie = response;
             }
 
             @Override
@@ -126,8 +138,10 @@ public class DetailMovieActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
         this.menu = menu;
-        DataMovie data = db.getMovie(id);
-        cekStatus(data);
+        Cursor cursor = db.getMovieProvider(id);
+        if (cursor != null && cursor.moveToFirst()){
+            cekStatus(new DataMovie(cursor));
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -149,7 +163,8 @@ public class DetailMovieActivity extends AppCompatActivity {
 
     private void removeBookmark() {
         try {
-            db.deleteMovie(id);
+            //db.deleteMovie(id);
+            db.deleteMovieProvider(id);
             changeIcon();
             Toast.makeText(this, title + " " + getString(R.string.not_bookmark_msg),
                     Toast.LENGTH_SHORT).show();
@@ -162,7 +177,14 @@ public class DetailMovieActivity extends AppCompatActivity {
 
     private void addBookmark() {
         try {
-            db.insertMovies(id, title, path_local, overview, release);
+            ContentValues values = new ContentValues();
+            values.put(DataMovie.COLUMN_ID, dataMovie.getId());
+            values.put(DataMovie.COLUMN_TITLE, dataMovie.getTitle());
+            values.put(DataMovie.COLUMN_OVERVIEW, dataMovie.getOverview());
+            values.put(DataMovie.COLUMN_POSTER_PATH, dataMovie.getPoster_path());
+            values.put(DataMovie.COLUMN_RELEASE, dataMovie.getRelease_date());
+            db.insertMovieProvider(values);
+            //db.insertMovies(id, title, path_local, overview, release);
             changeIcon();
             Toast.makeText(this, title + " " + getString(R.string.bookmark_msg),
                     Toast.LENGTH_SHORT).show();

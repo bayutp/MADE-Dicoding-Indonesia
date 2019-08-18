@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.bayupamuji.catalogmovie.BuildConfig;
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.adapter.ItemClickListener;
+import com.bayupamuji.catalogmovie.adapter.MovieAdapterRemote;
 import com.bayupamuji.catalogmovie.adapter.MoviesAdapter;
 import com.bayupamuji.catalogmovie.data.DataMovie;
 import com.bayupamuji.catalogmovie.data.DataTvShow;
@@ -41,7 +42,7 @@ public class MoviesFragment extends Fragment {
 
     public static final String EXTRA_MOVIE = "EXTRA_MOVIE";
 
-    private MoviesAdapter adapter;
+    private MovieAdapterRemote adapter;
     private RestService restService;
     private RecyclerView listView, rcSearch;
     private ProgressBar progressBar;
@@ -66,7 +67,7 @@ public class MoviesFragment extends Fragment {
         initRest();
         loadData();
         setHasOptionsMenu(true);
-        adapter = new MoviesAdapter(getActivity(), new ItemClickListener() {
+        adapter = new MovieAdapterRemote(getActivity(), new ItemClickListener() {
             @Override
             public void onItemClick(DataMovie dataMovie) {
                 Intent intent = new Intent(getActivity(), DetailMovieActivity.class);

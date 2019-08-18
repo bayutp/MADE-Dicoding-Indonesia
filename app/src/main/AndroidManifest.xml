@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <permission android:name="com.bayupamuji.catalogmovie.READ_DATABASE" android:protectionLevel="normal"/>
+    <permission android:name="com.bayupamuji.catalogmovie.WRITE_DATABASE" android:protectionLevel="normal"/>
 
     <application
         android:allowBackup="true"
@@ -24,6 +26,13 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/catalog_movie_info" />
         </receiver>
+
+        <provider
+            android:authorities="com.bayupamuji.catalogmovie"
+            android:name=".provider.CatalogMovieProvider"
+            android:exported="true"
+            android:readPermission="com.dicoding.mynotesapp.READ_DATABASE"
+            android:writePermission="com.dicoding.mynotesapp.WRITE_DATABASE" />
 
         <activity
             android:name=".ui.BookmarkActivity"

@@ -1,4 +1,4 @@
-package com.bayupamuji.catalogmovie.data;
+package com.example.catalogmoviefavorite2.data;
 
 import android.database.Cursor;
 import android.os.Parcel;

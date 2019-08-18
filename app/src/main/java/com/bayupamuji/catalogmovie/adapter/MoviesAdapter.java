@@ -1,6 +1,7 @@
 package com.bayupamuji.catalogmovie.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final Context context;
-    private List<DataMovie> dataMovies = new ArrayList<>();
+    private Cursor cursor;
     private final ItemClickListener itemClickListener;
 
     public MoviesAdapter(Context context, ItemClickListener itemClickListener) {
@@ -31,24 +32,38 @@ public class MoviesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        final DataMovie data = dataMovies.get(i);
-        viewHolder.bind(data,context);
+        final List<DataMovie> movieList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                DataMovie data = new DataMovie();
+                data.setId(cursor.getString(cursor.getColumnIndexOrThrow(DataMovie.COLUMN_ID)));
+                data.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(DataMovie.COLUMN_TITLE)));
+                data.setPoster_path(cursor.getString(cursor.getColumnIndexOrThrow(DataMovie.COLUMN_POSTER_PATH)));
+                data.setOverview(cursor.getString(cursor.getColumnIndexOrThrow(DataMovie.COLUMN_OVERVIEW)));
+                data.setOverview(cursor.getString(cursor.getColumnIndexOrThrow(DataMovie.COLUMN_RELEASE)));
+                movieList.add(data);
+            } while (cursor.moveToNext());
+        }
+        viewHolder.bind(movieList.get(i),context);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClick(data);
+                itemClickListener.onItemClick(movieList.get(i));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return dataMovies.size();
+        if (cursor != null) {
+            return cursor.getCount();
+        }else {
+            return 0;
+        }
     }
 
-    public void updateMovie(List<DataMovie> dataMovie){
-        dataMovies.clear();
-        dataMovies.addAll(dataMovie);
+    public void updateMovie(Cursor cursor){
+        this.cursor = cursor;
         notifyDataSetChanged();
     }
 

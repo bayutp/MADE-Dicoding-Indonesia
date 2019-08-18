@@ -1,7 +1,11 @@
 package com.bayupamuji.catalogmovie.ui;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bayupamuji.catalogmovie.R;
 import com.bayupamuji.catalogmovie.adapter.ItemClickListener;
@@ -31,6 +36,8 @@ public class MoviesBookmarkFragment extends Fragment {
     private RecyclerView rcBookmark;
     private MoviesAdapter adapter;
     private ProgressBar progressBar;
+    private Cursor cursor;
+    private Context context;
 
     public MoviesBookmarkFragment() {
         // Required empty public constructor
@@ -47,9 +54,9 @@ public class MoviesBookmarkFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rcBookmark = view.findViewById(R.id.rc_movies);
         progressBar = view.findViewById(R.id.progress_movies);
-
-        initView();
+        context = view.getContext();
         loadData();
+        initView();
     }
 
     private void initView() {
@@ -72,15 +79,34 @@ public class MoviesBookmarkFragment extends Fragment {
     }
 
     private void loadData() {
-        DatabaseHelper db = new DatabaseHelper(getActivity());
+        /*progressBar.setVisibility(View.GONE);
+        rcBookmark.setVisibility(View.VISIBLE);
+        adapter.updateMovie(db.getAllMovies());*/
         progressBar.setVisibility(View.GONE);
         rcBookmark.setVisibility(View.VISIBLE);
-        adapter.updateMovie(db.getAllMovies());
+        new LoadMovieAsync().execute();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         loadData();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class LoadMovieAsync extends AsyncTask<Void, Void, Cursor>{
+
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+            DatabaseHelper db = new DatabaseHelper(getActivity());
+            return db.getAllMovieProvider();
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            super.onPostExecute(cursor);
+            MoviesBookmarkFragment.this.cursor = cursor;
+            adapter.updateMovie(cursor);
+        }
     }
 }

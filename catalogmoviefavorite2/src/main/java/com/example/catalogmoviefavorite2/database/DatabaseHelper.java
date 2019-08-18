@@ -1,4 +1,4 @@
-package com.bayupamuji.catalogmovie.database;
+package com.example.catalogmoviefavorite2.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,30 +7,30 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
-import com.bayupamuji.catalogmovie.data.DataMovie;
-import com.bayupamuji.catalogmovie.data.DataTvShow;
+import com.example.catalogmoviefavorite2.data.DataMovie;
+import com.example.catalogmoviefavorite2.data.DataTvShow;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bayupamuji.catalogmovie.data.DataMovie.COLUMN_ID;
-import static com.bayupamuji.catalogmovie.data.DataMovie.COLUMN_OVERVIEW;
-import static com.bayupamuji.catalogmovie.data.DataMovie.COLUMN_POSTER_PATH;
-import static com.bayupamuji.catalogmovie.data.DataMovie.COLUMN_RELEASE;
-import static com.bayupamuji.catalogmovie.data.DataMovie.COLUMN_TITLE;
-import static com.bayupamuji.catalogmovie.data.DataMovie.TABLE_NAME;
-import static com.bayupamuji.catalogmovie.data.DataTvShow.COLUMN_TV_ID;
-import static com.bayupamuji.catalogmovie.data.DataTvShow.COLUMN_TV_NAME;
-import static com.bayupamuji.catalogmovie.data.DataTvShow.COLUMN_TV_OVERVIEW;
-import static com.bayupamuji.catalogmovie.data.DataTvShow.COLUMN_TV_POSTER_PATH;
-import static com.bayupamuji.catalogmovie.data.DataTvShow.COLUMN_TV_RELEASE;
-import static com.bayupamuji.catalogmovie.data.DataTvShow.TABLE_TV_NAME;
+import static com.example.catalogmoviefavorite2.data.DataMovie.COLUMN_ID;
+import static com.example.catalogmoviefavorite2.data.DataMovie.COLUMN_OVERVIEW;
+import static com.example.catalogmoviefavorite2.data.DataMovie.COLUMN_POSTER_PATH;
+import static com.example.catalogmoviefavorite2.data.DataMovie.COLUMN_RELEASE;
+import static com.example.catalogmoviefavorite2.data.DataMovie.COLUMN_TITLE;
+import static com.example.catalogmoviefavorite2.data.DataMovie.TABLE_NAME;
+import static com.example.catalogmoviefavorite2.data.DataTvShow.COLUMN_TV_ID;
+import static com.example.catalogmoviefavorite2.data.DataTvShow.COLUMN_TV_NAME;
+import static com.example.catalogmoviefavorite2.data.DataTvShow.COLUMN_TV_OVERVIEW;
+import static com.example.catalogmoviefavorite2.data.DataTvShow.COLUMN_TV_POSTER_PATH;
+import static com.example.catalogmoviefavorite2.data.DataTvShow.COLUMN_TV_RELEASE;
+import static com.example.catalogmoviefavorite2.data.DataTvShow.TABLE_TV_NAME;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "movies_db";
-    public static final String AUTHOR = "com.bayupamuji.catalogmovie";
+    private static final String AUTHOR = "dicoding.com";
 
     public static final Uri CONTENT_URI = new Uri.Builder().scheme("content")
             .authority(AUTHOR)
