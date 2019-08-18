@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +29,7 @@ import com.bayupamuji.catalogmovie.database.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.bayupamuji.catalogmovie.ui.MoviesFragment.EXTRA_MOVIE;
 
@@ -79,9 +82,6 @@ public class MoviesBookmarkFragment extends Fragment {
     }
 
     private void loadData() {
-        /*progressBar.setVisibility(View.GONE);
-        rcBookmark.setVisibility(View.VISIBLE);
-        adapter.updateMovie(db.getAllMovies());*/
         progressBar.setVisibility(View.GONE);
         rcBookmark.setVisibility(View.VISIBLE);
         new LoadMovieAsync().execute();
@@ -96,10 +96,10 @@ public class MoviesBookmarkFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     private class LoadMovieAsync extends AsyncTask<Void, Void, Cursor>{
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected Cursor doInBackground(Void... voids) {
-            DatabaseHelper db = new DatabaseHelper(getActivity());
-            return db.getAllMovieProvider();
+            return Objects.requireNonNull(getActivity()).getContentResolver().query(DatabaseHelper.CONTENT_URI,null,null,null,null);
         }
 
         @Override

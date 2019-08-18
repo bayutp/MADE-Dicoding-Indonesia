@@ -66,12 +66,6 @@ public class DetailMovieActivity extends AppCompatActivity {
     private void loadData() {
         String api = BuildConfig.TMDB_API_KEY;
         id = getIntent().getStringExtra(EXTRA_MOVIE);
-        Cursor cursor = db.getMovieProvider(id);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) status = true;
-            cursor.close();
-        }
         restService.getMovieDetail(api, id, new RestService.MovieDetailCallback() {
             @Override
             public void onSuccess(DataMovie response) {
@@ -138,9 +132,11 @@ public class DetailMovieActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
         this.menu = menu;
-        Cursor cursor = db.getMovieProvider(id);
-        if (cursor != null && cursor.moveToFirst()){
-            cekStatus(new DataMovie(cursor));
+        if (id != null){
+            Cursor cursor = getContentResolver().query(Uri.parse(CONTENT_URI + "/" + id), null,null,null,null);
+            if (cursor != null && cursor.moveToFirst()){
+                cekStatus(new DataMovie(cursor));
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -163,8 +159,7 @@ public class DetailMovieActivity extends AppCompatActivity {
 
     private void removeBookmark() {
         try {
-            //db.deleteMovie(id);
-            db.deleteMovieProvider(id);
+            getContentResolver().delete(Uri.parse(CONTENT_URI + "/" + id), null, null);
             changeIcon();
             Toast.makeText(this, title + " " + getString(R.string.not_bookmark_msg),
                     Toast.LENGTH_SHORT).show();
@@ -183,8 +178,7 @@ public class DetailMovieActivity extends AppCompatActivity {
             values.put(DataMovie.COLUMN_OVERVIEW, dataMovie.getOverview());
             values.put(DataMovie.COLUMN_POSTER_PATH, dataMovie.getPoster_path());
             values.put(DataMovie.COLUMN_RELEASE, dataMovie.getRelease_date());
-            db.insertMovieProvider(values);
-            //db.insertMovies(id, title, path_local, overview, release);
+            getContentResolver().insert(CONTENT_URI, values);
             changeIcon();
             Toast.makeText(this, title + " " + getString(R.string.bookmark_msg),
                     Toast.LENGTH_SHORT).show();

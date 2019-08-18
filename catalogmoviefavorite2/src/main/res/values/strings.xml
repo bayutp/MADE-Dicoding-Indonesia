@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Catalog Movie Favorite</string>
+    <string name="base_image_path">http://image.tmdb.org/t/p/w185_and_h278_bestv2</string>
 </resources>

@@ -31,8 +31,8 @@
             android:authorities="com.bayupamuji.catalogmovie"
             android:name=".provider.CatalogMovieProvider"
             android:exported="true"
-            android:readPermission="com.dicoding.mynotesapp.READ_DATABASE"
-            android:writePermission="com.dicoding.mynotesapp.WRITE_DATABASE" />
+            android:readPermission="com.bayupamuji.catalogmovie.READ_DATABASE"
+            android:writePermission="ccom.bayupamuji.catalogmovie.WRITE_DATABASE" />
 
         <activity
             android:name=".ui.BookmarkActivity"

@@ -14,7 +14,9 @@ import com.bayupamuji.catalogmovie.database.DatabaseHelper;
 
 import java.util.Objects;
 
+import static com.bayupamuji.catalogmovie.data.DataMovie.TABLE_NAME;
 import static com.bayupamuji.catalogmovie.database.DatabaseHelper.AUTHOR;
+import static com.bayupamuji.catalogmovie.database.DatabaseHelper.CONTENT_URI;
 
 public class CatalogMovieProvider extends ContentProvider {
     public static final int MOVIE = 1;
@@ -23,8 +25,8 @@ public class CatalogMovieProvider extends ContentProvider {
     private DatabaseHelper dbHelper;
 
     static {
-        uriMatcher.addURI(AUTHOR, DataMovie.TABLE_NAME, MOVIE);
-        uriMatcher.addURI(AUTHOR + "/", DataMovie.TABLE_NAME, MOVIE_ID);
+        uriMatcher.addURI(AUTHOR, TABLE_NAME, MOVIE);
+        uriMatcher.addURI(AUTHOR, TABLE_NAME + "/#", MOVIE_ID);
     }
 
     @Override

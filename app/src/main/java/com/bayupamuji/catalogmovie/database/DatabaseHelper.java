@@ -54,42 +54,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertMovies(String id, String title, String path, String overview, String release_date) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(COLUMN_ID, id);
-        values.put(COLUMN_TITLE, title);
-        values.put(DataMovie.COLUMN_POSTER_PATH, path);
-        values.put(DataMovie.COLUMN_OVERVIEW, overview);
-        values.put(COLUMN_RELEASE, release_date);
-
-        db.insert(DataMovie.TABLE_NAME, null, values);
-        db.close();
-    }
-
-    public DataMovie getMovie(String id) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.query(DataMovie.TABLE_NAME,
-                new String[]{COLUMN_ID, COLUMN_TITLE, COLUMN_OVERVIEW, COLUMN_POSTER_PATH, COLUMN_RELEASE},
-                COLUMN_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-        DataMovie data = new DataMovie();
-        if (cursor != null && cursor.moveToFirst()) {
-            data = new DataMovie(
-                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_POSTER_PATH)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_OVERVIEW)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_RELEASE))
-            );
-            cursor.close();
-        }
-
-        return data;
-    }
-
     public List<DataMovie> getAllMovies() {
         List<DataMovie> data = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_NAME;
@@ -134,12 +98,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int deleteMovieProvider(String id){
         SQLiteDatabase db = this.getReadableDatabase();
         return db.delete(TABLE_NAME,COLUMN_ID + " = ?", new String[]{id});
-    }
-
-    public void deleteMovie(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[]{id});
-        db.close();
     }
 
     public void insertTvShow(String id, String name, String path, String overview, String release_date) {
