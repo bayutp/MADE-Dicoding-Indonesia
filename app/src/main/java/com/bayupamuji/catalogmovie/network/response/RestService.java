@@ -99,8 +99,8 @@ public class RestService {
         });
     }
 
-    public void getUpComingMovies(final String api, final MovieCallback callback){
-        networkService.getUpComingMovies(api).enqueue(new Callback<MovieResponse>() {
+    public void getUpComingMovies(final String api, final String dateGte, final String dateLte, final MovieCallback callback){
+        networkService.getUpComingMovies(api, dateGte, dateLte).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 callback.onSuccess(response.body());

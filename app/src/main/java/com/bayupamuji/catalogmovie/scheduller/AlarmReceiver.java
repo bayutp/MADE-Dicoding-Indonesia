@@ -13,15 +13,27 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
+import com.bayupamuji.catalogmovie.BuildConfig;
 import com.bayupamuji.catalogmovie.R;
+import com.bayupamuji.catalogmovie.network.NetworkService;
+import com.bayupamuji.catalogmovie.network.response.MovieResponse;
+import com.bayupamuji.catalogmovie.network.response.RestService;
 import com.bayupamuji.catalogmovie.ui.MainActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AlarmReceiver extends BroadcastReceiver {
     public static final String TYPE_DAILY_REMINDER = "DAILY REMINDER";
@@ -34,6 +46,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private final int ID_DAILY_REMINDER = 1;
     private final int ID_NEW_REMINDER = 2;
+
+    private RestService restService;
 
     public AlarmReceiver() {
     }
@@ -57,7 +71,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
@@ -107,28 +121,44 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     }
 
-    public void setNewMovieReminder(Context context, String type, String time, String message){
+    public void setNewMovieReminder(final Context context, final String type, final String time){
         if (isDateInvalid(time, TIME_FORMAT)) return;
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        intent.putExtra(EXTRA_TYPE, type);
+        initRest();
 
-        String[] timeArray = time.split(":");
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = sdf.format(date);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]));
-        calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]));
-        calendar.set(Calendar.SECOND, 0);
+        restService.getUpComingMovies(BuildConfig.TMDB_API_KEY, currentDate, currentDate, new RestService.MovieCallback() {
+            @Override
+            public void onSuccess(MovieResponse response) {
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.putExtra(EXTRA_MESSAGE,"Hai, " + response.getMovieList().get(0).getTitle() + " has been released today, check it now!" );
+                intent.putExtra(EXTRA_TYPE, type);
 
-        if (calendar.before(Calendar.getInstance())) calendar.add(Calendar.DATE,1);
+                String[] timeArray = time.split(":");
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_NEW_REMINDER, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]));
+                calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]));
+                calendar.set(Calendar.SECOND, 0);
 
-        if (alarmManager != null){
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        }
+                if (calendar.before(Calendar.getInstance())) calendar.add(Calendar.DATE,1);
+
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_NEW_REMINDER, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                if (alarmManager != null){
+                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                }
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Toast.makeText(context, "error :"+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void disableReminder(Context context, String type){
@@ -152,6 +182,23 @@ public class AlarmReceiver extends BroadcastReceiver {
         }catch (ParseException e){
             return true;
         }
+    }
+
+    private void initRest() {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.themoviedb.org/3/")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        NetworkService networkService = retrofit.create(NetworkService.class);
+        restService = new RestService(networkService);
     }
 
 }

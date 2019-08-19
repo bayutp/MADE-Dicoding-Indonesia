@@ -28,7 +28,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ReminderActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private AlarmReceiver alarmReceiver;
-    private RestService restService;
     private SharePreferencesCatalogMovie sp;
     private final String KEY_DAILY = "KEY_DAILY";
     private final String KEY_RELEASE = "KEY_RELEASE";
@@ -39,7 +38,6 @@ public class ReminderActivity extends AppCompatActivity implements CompoundButto
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder);
 
-        initRest();
         initToolbar();
         initComponent();
 
@@ -69,30 +67,13 @@ public class ReminderActivity extends AppCompatActivity implements CompoundButto
         switchRelease.setChecked(statusRelease);
     }
 
-    private void initRest() {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        NetworkService networkService = retrofit.create(NetworkService.class);
-        restService = new RestService(networkService);
-    }
-
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         switch (compoundButton.getId()) {
             case R.id.switch_daily_reminder:
                 if (isChecked) {
                     sp.setStatus(KEY_DAILY);
-                    alarmReceiver.setDailyReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER, "07:00", "Hai, do you want to watch movie today, lets check new movie here");
+                    alarmReceiver.setDailyReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER, "07:00", "Hai, do you want to watch movie today, lets check it now!");
                 } else {
                     sp.remove(KEY_DAILY);
                     alarmReceiver.disableReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER);
@@ -101,26 +82,7 @@ public class ReminderActivity extends AppCompatActivity implements CompoundButto
             case R.id.switch_new_reminder:
                 if (isChecked) {
                     sp.setStatus(KEY_RELEASE);
-                    restService.getUpComingMovies(BuildConfig.TMDB_API_KEY, new RestService.MovieCallback() {
-                        @Override
-                        public void onSuccess(MovieResponse response) {
-
-                            Date date = Calendar.getInstance().getTime();
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                            String current = sdf.format(date);
-
-                            for (int i = 0;i<response.getMovieList().size();i++){
-                                if (response.getMovieList().get(i).getRelease_date().equalsIgnoreCase(current)){
-                                    alarmReceiver.setNewMovieReminder(ReminderActivity.this, AlarmReceiver.TYPE_NEW_REMINDER, "00:00", "Hai, " + response.getMovieList().get(0).getTitle() + " has been released today, check it now!");
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable error) {
-                            Toast.makeText(ReminderActivity.this, "network error : " + error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    alarmReceiver.setNewMovieReminder(this, AlarmReceiver.TYPE_NEW_REMINDER,"08:00");
                 } else {
                     sp.remove(KEY_RELEASE);
                     alarmReceiver.disableReminder(this, AlarmReceiver.TYPE_NEW_REMINDER);

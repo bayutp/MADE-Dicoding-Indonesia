@@ -29,6 +29,6 @@ public interface NetworkService {
     @GET("search/tv")
     Call<TvShowResponse> getSearchTvResult(@Query("api_key") String api, @Query("query") String query);
 
-    @GET("movie/upcoming")
-    Call<MovieResponse> getUpComingMovies(@Query("api_key") String api);
+    @GET("discover/movie")
+    Call<MovieResponse> getUpComingMovies(@Query("api_key") String api, @Query("primary_release_date.gte") String dateGte, @Query("primary_release_date.lte") String dateLte);
 }

@@ -10,7 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "TMDB_API_KEY", '"bd6d19dfe2e6c6eaed345e2f8bb52d19"')
-        buildConfigField("String", "BASE_IMAGE_URL", '"http://image.tmdb.org/t/p/w185_and_h278_bestv2"')
+        buildConfigField("String", "BASE_IMAGE_URL", '"https://image.tmdb.org/t/p/w185_and_h278_bestv2"')
     }
     buildTypes {
         release {
