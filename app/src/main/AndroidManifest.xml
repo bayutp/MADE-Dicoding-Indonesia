@@ -5,8 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <permission android:name="com.bayupamuji.catalogmovie.READ_DATABASE" android:protectionLevel="normal"/>
-    <permission android:name="com.bayupamuji.catalogmovie.WRITE_DATABASE" android:protectionLevel="normal"/>
+
+    <permission
+        android:name="com.bayupamuji.catalogmovie.READ_DATABASE"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.bayupamuji.catalogmovie.WRITE_DATABASE"
+        android:protectionLevel="normal" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ReminderActivity"></activity>
+        <activity android:name=".ui.ReminderActivity"/>
 
         <receiver android:name=".widget.CatalogMovie">
             <intent-filter>
@@ -28,26 +33,21 @@
         </receiver>
 
         <provider
-            android:authorities="com.bayupamuji.catalogmovie"
             android:name=".provider.CatalogMovieProvider"
+            android:authorities="com.bayupamuji.catalogmovie"
             android:exported="true"
             android:readPermission="com.bayupamuji.catalogmovie.READ_DATABASE"
             android:writePermission="ccom.bayupamuji.catalogmovie.WRITE_DATABASE" />
 
-        <activity
-            android:name=".ui.BookmarkActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".ui.BookmarkActivity" />
         <activity
             android:name=".ui.DetailMovieActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/DetailTheme" />
         <activity
             android:name=".ui.DetailTvActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/DetailTheme" />
         <activity
-            android:name=".ui.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

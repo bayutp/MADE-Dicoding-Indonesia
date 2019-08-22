@@ -5,26 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
 
-import com.bayupamuji.catalogmovie.BuildConfig;
 import com.bayupamuji.catalogmovie.R;
-import com.bayupamuji.catalogmovie.network.NetworkService;
-import com.bayupamuji.catalogmovie.network.response.MovieResponse;
-import com.bayupamuji.catalogmovie.network.response.RestService;
 import com.bayupamuji.catalogmovie.scheduller.AlarmReceiver;
 import com.bayupamuji.catalogmovie.utils.SharePreferencesCatalogMovie;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ReminderActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private AlarmReceiver alarmReceiver;
@@ -73,7 +57,7 @@ public class ReminderActivity extends AppCompatActivity implements CompoundButto
             case R.id.switch_daily_reminder:
                 if (isChecked) {
                     sp.setStatus(KEY_DAILY);
-                    alarmReceiver.setDailyReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER, "07:00", "Hai, do you want to watch movie today, lets check it now!");
+                    alarmReceiver.setReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER, "07:00");
                 } else {
                     sp.remove(KEY_DAILY);
                     alarmReceiver.disableReminder(this, AlarmReceiver.TYPE_DAILY_REMINDER);
@@ -82,7 +66,7 @@ public class ReminderActivity extends AppCompatActivity implements CompoundButto
             case R.id.switch_new_reminder:
                 if (isChecked) {
                     sp.setStatus(KEY_RELEASE);
-                    alarmReceiver.setNewMovieReminder(this, AlarmReceiver.TYPE_NEW_REMINDER,"08:00");
+                    alarmReceiver.setReminder(this, AlarmReceiver.TYPE_NEW_REMINDER,"08:00");
                 } else {
                     sp.remove(KEY_RELEASE);
                     alarmReceiver.disableReminder(this, AlarmReceiver.TYPE_NEW_REMINDER);

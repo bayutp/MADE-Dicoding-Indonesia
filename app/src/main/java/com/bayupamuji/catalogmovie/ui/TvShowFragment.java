@@ -3,13 +3,17 @@ package com.bayupamuji.catalogmovie.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +32,7 @@ import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.network.NetworkService;
 import com.bayupamuji.catalogmovie.network.response.RestService;
 import com.bayupamuji.catalogmovie.network.response.TvShowResponse;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +50,7 @@ public class TvShowFragment extends Fragment {
     public static final String EXTRA_TV = "EXTRA_TV";
 
     private TvAdapter adapter;
-    private final List<DataTvShow> dataTvShows = new ArrayList<>();
+    private List<DataTvShow> dataTvShows = new ArrayList<>();
     private RestService restService;
     private RecyclerView listView, rcSearch;
     private ProgressBar progressBar;
@@ -63,10 +68,36 @@ public class TvShowFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        loadData();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("data_tv", (ArrayList<? extends Parcelable>) dataTvShows);
+        Log.d("Cek data onsave","data onsaveinstancestate "+new Gson().toJsonTree(dataTvShows));
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            dataTvShows = savedInstanceState.getParcelableArrayList("data_tv");
+            progressBar.setVisibility(View.GONE);
+            rcSearch.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            adapter.updateTv(dataTvShows);
+
+            Log.d("Cek data onrestore","data onview restore "+new Gson().toJsonTree(dataTvShows));
+        }
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initRest();
-        loadData();
         setHasOptionsMenu(true);
         adapter = new TvAdapter(getActivity(), dataTvShows, new ItemClickListener() {
             @Override
@@ -87,24 +118,24 @@ public class TvShowFragment extends Fragment {
         listView.setHasFixedSize(true);
         rcSearch.setHasFixedSize(true);
 
-        setupList();
-    }
-
-    private void setupList() {
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rcSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
         listView.setAdapter(adapter);
 
-        rcSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void loadData() {
+        initRest();
         restService.getTvShow(api, new RestService.TvShowCallback() {
             @Override
             public void onSuccess(TvShowResponse response) {
                 progressBar.setVisibility(View.GONE);
                 rcSearch.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
+                dataTvShows.addAll(response.getResults());
                 adapter.updateTv(response.getResults());
+                Log.d("Cek data", "cek data >>>>>>>>>>> "+ new Gson().toJsonTree(response.getResults()));
+                Log.d("Cek data", "cek data tv list >>>>>>>>>>> "+ new Gson().toJsonTree(dataTvShows));
             }
 
             @Override
@@ -132,6 +163,7 @@ public class TvShowFragment extends Fragment {
         restService = new RestService(networkService);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);

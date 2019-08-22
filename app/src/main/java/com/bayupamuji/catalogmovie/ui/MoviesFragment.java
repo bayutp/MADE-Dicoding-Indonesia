@@ -4,13 +4,17 @@ package com.bayupamuji.catalogmovie.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +33,10 @@ import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.network.NetworkService;
 import com.bayupamuji.catalogmovie.network.response.MovieResponse;
 import com.bayupamuji.catalogmovie.network.response.RestService;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +56,8 @@ public class MoviesFragment extends Fragment {
     private SearchView searchView;
     private final String api = BuildConfig.TMDB_API_KEY;
     private SearchView.OnQueryTextListener queryTextListener;
+    private List<DataMovie> dataMovies = new ArrayList<>();
+    private RecyclerView.LayoutManager layoutManager;
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -61,11 +70,34 @@ public class MoviesFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        loadData();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("data_movie", (ArrayList<? extends Parcelable>) dataMovies);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            dataMovies = savedInstanceState.getParcelableArrayList("data_movie");
+            progressBar.setVisibility(View.GONE);
+            rcSearch.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            adapter.updateMovie(dataMovies);
+        }
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initRest();
-        loadData();
         setHasOptionsMenu(true);
         adapter = new MovieAdapterRemote(getActivity(), new ItemClickListener() {
             @Override
@@ -85,20 +117,23 @@ public class MoviesFragment extends Fragment {
         listView.setHasFixedSize(true);
         rcSearch.setHasFixedSize(true);
 
-        listView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new LinearLayoutManager(getActivity());
+        listView.setLayoutManager(layoutManager);
         rcSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         listView.setAdapter(adapter);
     }
 
     private void loadData() {
+        initRest();
         restService.getMovies(api, new RestService.MovieCallback() {
             @Override
             public void onSuccess(MovieResponse response) {
                 progressBar.setVisibility(View.GONE);
                 rcSearch.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
-                adapter.updateMovie(response.getMovieList());
+                dataMovies.addAll(response.getMovieList());
+                adapter.updateMovie(dataMovies);
             }
 
             @Override
@@ -126,6 +161,7 @@ public class MoviesFragment extends Fragment {
         restService = new RestService(networkService);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
