@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +32,6 @@ import com.bayupamuji.catalogmovie.data.DataTvShow;
 import com.bayupamuji.catalogmovie.network.NetworkService;
 import com.bayupamuji.catalogmovie.network.response.MovieResponse;
 import com.bayupamuji.catalogmovie.network.response.RestService;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +55,6 @@ public class MoviesFragment extends Fragment {
     private final String api = BuildConfig.TMDB_API_KEY;
     private SearchView.OnQueryTextListener queryTextListener;
     private List<DataMovie> dataMovies = new ArrayList<>();
-    private RecyclerView.LayoutManager layoutManager;
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -117,7 +114,7 @@ public class MoviesFragment extends Fragment {
         listView.setHasFixedSize(true);
         rcSearch.setHasFixedSize(true);
 
-        layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(layoutManager);
         rcSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
 

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bayupamuji.catalogmovie.BuildConfig;
@@ -59,10 +60,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         String title = "Catalog Movie";
         int notifId = type.equalsIgnoreCase(TYPE_DAILY_REMINDER) ? ID_DAILY_REMINDER : ID_NEW_REMINDER;
 
-        if (notifId == ID_NEW_REMINDER) {
-            setNewMovieReminder(context, title, notifId);
-        } else {
+        if (notifId == ID_DAILY_REMINDER) {
             sendNotification(context, title, message, notifId);
+        } else {
+            setNewMovieReminder(context, title);
         }
 
     }
@@ -127,7 +128,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     }
 
-    private void setNewMovieReminder(final Context context, final String title, final int notifId) {
+    private void setNewMovieReminder(final Context context, final String title) {
         initRest();
 
         Date date = Calendar.getInstance().getTime();
@@ -137,8 +138,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         restService.getUpComingMovies(BuildConfig.TMDB_API_KEY, currentDate, currentDate, new RestService.MovieCallback() {
             @Override
             public void onSuccess(MovieResponse response) {
+                for (int i = 0; i < response.getMovieList().size(); i++) {
+                    String message = "Hi " + response.getMovieList().get(i).getTitle() + " released today";
+                    sendNotification(context, title, message, i);
+                    Log.d("Cek data", "data message>>>" + message);
+                }/*
                 String message = "Hi " + response.getMovieList().get(0).getTitle() + " released today";
-                sendNotification(context, title, message, notifId);
+                sendNotification(context, title, message, notifId);*/
             }
 
             @Override
